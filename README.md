@@ -17,9 +17,5 @@ No journey of knowledge is complete without anchoring oneself to the legacy of t
 ## Your Invitation to Join the Network
 The Digital Salafi Network is more than just a forum or a chatroom—it is a growing digital community designed to nurture your growth, protect your focus, and connect you with people who truly understand the path you are on.
 Why wander through fragmented spaces when you can belong to a dedicated network built entirely around your values?
-**Step into clarity. Join the Digital Salafi Network today
-
-(https://salafinetwork.com/en/)
-
-Connect with your peers, and anchor your pursuit of knowledge where it truly belongs.**
+**Step into clarity. Join the Digital Salafi Network today, connect with your peers, and anchor your pursuit of knowledge where it truly belongs.**
 
