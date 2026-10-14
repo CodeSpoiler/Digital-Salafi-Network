@@ -12,10 +12,3 @@ Open http://localhost:8095/community. Create a test account; the development dat
 
 Run `go test ./...` in WSL/Linux or a terminal with Go installed.
 
-## Git workflow
-
-Work on `design/simple-responsive-forum`. Commit your selected changes and run `git push` to update this branch. When ready, open a pull request into main. Production configuration, private data and earlier deployment history are not included in this repository.
-
-## Features
-
-Username/password accounts, categories, topics, threaded comments, search and basic administration. Password recovery, DMs, uploads, pagination and expanded moderation are still in development. Local test accounts are separate from any hosted installation.
