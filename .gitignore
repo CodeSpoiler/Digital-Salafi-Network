@@ -1,0 +1,35 @@
+/data/
+/salafi-network
+/salafi-network.exe
+
+# Deployment state and credentials stay outside this repository.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.dump
+*.sql
+*.sql.gz
+*credentials*.json
+*tunnel-token*
+local-admin.txt
+local-member.txt
+/backups/
+/uploads/
+/discourse-data/
+/secrets/
+/deploy/tunnel.yml
+/deploy/salafi.yml
+*.db
+*.db-wal
+*.db-shm
+/salafi-community/
+*admin-password*
+
+/discourse-theme/
+/DISCOURSE-LOCAL.md
+/salafi netowrk deployement.txt
+*.zip
+*.tar
+*.tar.gz
