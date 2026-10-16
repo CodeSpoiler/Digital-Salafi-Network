@@ -33,6 +33,7 @@ type member struct {
 type category struct {
 	ID                int64
 	Name, Description string
+	Count             int
 }
 type topic struct {
 	ID, CategoryID                         int64
@@ -52,15 +53,21 @@ type commentNode struct {
 	Locked      bool
 }
 type communityPage struct {
-	CommentTree              []*commentNode
-	View, CSRF, Error, Query string
-	User                     *member
-	Categories               []category
-	Topics                   []topic
-	Topic                    topic
-	Replies                  []reply
-	CategoryID               int64
-	ReplyTo                  reply
+	Profile                                  memberProfile
+	Members                                  []memberProfile
+	AdminTopics                              []adminTopic
+	ProfileComments                          []profileComment
+	Tab                                      string
+	TotalTopics, TotalComments, TotalMembers int
+	CommentTree                              []*commentNode
+	View, CSRF, Error, Query                 string
+	User                                     *member
+	Categories                               []category
+	Topics                                   []topic
+	Topic                                    topic
+	Replies                                  []reply
+	CategoryID                               int64
+	ReplyTo                                  reply
 }
 type requestWindow struct {
 	Count int
@@ -107,7 +114,11 @@ func openCommunity(path string) (*Community, error) {
 			return nil, err
 		}
 	}
-	tmpl, err := template.ParseFS(assets, "templates/community.html")
+	if _, err = db.Exec(`CREATE TABLE IF NOT EXISTS profiles(member_id INTEGER PRIMARY KEY REFERENCES members(id), display_name TEXT NOT NULL DEFAULT '', bio TEXT NOT NULL DEFAULT '', interests TEXT NOT NULL DEFAULT '', goals TEXT NOT NULL DEFAULT '', joined TEXT NOT NULL DEFAULT '');`); err != nil {
+		db.Close()
+		return nil, err
+	}
+	tmpl, err := template.ParseFS(assets, "templates/community.html", "templates/members.html")
 	if err != nil {
 		db.Close()
 		return nil, err
@@ -186,6 +197,26 @@ func (c *Community) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-store")
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	p := communityPage{User: c.user(r), View: strings.TrimPrefix(strings.TrimSuffix(r.URL.Path, "/"), "/community")}
+	if !localAdminRequest(r) {
+		if p.View == "/admin" || strings.HasPrefix(p.View, "/admin/") {
+			http.Error(w, "Administration is available only on localhost.", http.StatusForbidden)
+			return
+		}
+		if p.User != nil {
+			p.User.Admin = false
+		}
+	}
+
+	if p.View == "/admin" && (r.Method == "GET" || r.Method == "HEAD") {
+		if p.User == nil {
+			http.Redirect(w, r, "/community/login?next=admin", http.StatusSeeOther)
+			return
+		}
+		if !p.User.Admin {
+			http.Error(w, "Administrator account required. You are signed in as a regular member. Return to /community, log out, then sign in as network_admin.", http.StatusForbidden)
+			return
+		}
+	}
 	csrf, err := r.Cookie("sn_csrf")
 	if err != nil || len(csrf.Value) != 64 {
 		p.CSRF = token()
@@ -242,6 +273,12 @@ var usernamePattern = regexp.MustCompile(`^[a-zA-Z0-9_]{3,24}$`)
 func (c *Community) post(w http.ResponseWriter, r *http.Request, p *communityPage) error {
 	get := func(k string) string { return strings.TrimSpace(r.PostForm.Get(k)) }
 	redirect := "/community"
+	if strings.HasPrefix(p.View, "/u/") {
+		return c.saveProfile(w, r, p)
+	}
+	if p.View == "/admin" && get("action") != "" {
+		return c.adminAction(w, r, p)
+	}
 	switch p.View {
 	case "/register", "/login":
 		name, password := get("username"), r.PostForm.Get("password")
@@ -260,6 +297,9 @@ func (c *Community) post(w http.ResponseWriter, r *http.Request, p *communityPag
 				return errors.New("That username is unavailable. Choose another.")
 			}
 			id, _ = result.LastInsertId()
+			if _, err := c.db.Exec("INSERT INTO profiles(member_id,joined) VALUES(?,?)", id, time.Now().UTC().Format("January 2006")); err != nil {
+				return err
+			}
 		} else {
 			err := c.db.QueryRow("SELECT id,password FROM members WHERE name=?", name).Scan(&id, &hash)
 			if err != nil {
@@ -278,6 +318,9 @@ func (c *Community) post(w http.ResponseWriter, r *http.Request, p *communityPag
 		c.db.Exec("DELETE FROM sessions WHERE expires<=?", time.Now().Unix())
 		c.cookie(w, "sn_session", t, 7*86400)
 		c.cookie(w, "sn_csrf", token(), 86400)
+		if r.URL.Query().Get("next") == "admin" && localAdminRequest(r) {
+			redirect = "/community/admin"
+		}
 	case "/logout":
 		if s, err := r.Cookie("sn_session"); err == nil {
 			c.db.Exec("DELETE FROM sessions WHERE token=?", digest(s.Value))
@@ -367,13 +410,16 @@ func (c *Community) post(w http.ResponseWriter, r *http.Request, p *communityPag
 	return nil
 }
 func (c *Community) load(r *http.Request, p *communityPage) error {
-	rows, err := c.db.Query("SELECT id,name,description FROM categories ORDER BY id")
+	if err := c.db.QueryRow(`SELECT (SELECT count(*) FROM topics WHERE hidden=0), (SELECT count(*) FROM replies r JOIN topics t ON t.id=r.topic_id WHERE t.hidden=0), (SELECT count(*) FROM members)`).Scan(&p.TotalTopics, &p.TotalComments, &p.TotalMembers); err != nil {
+		return err
+	}
+	rows, err := c.db.Query("SELECT c.id,c.name,c.description,(SELECT count(*) FROM topics t WHERE t.category_id=c.id AND t.hidden=0) FROM categories c ORDER BY c.id")
 	if err != nil {
 		return err
 	}
 	for rows.Next() {
 		var cat category
-		if err = rows.Scan(&cat.ID, &cat.Name, &cat.Description); err != nil {
+		if err = rows.Scan(&cat.ID, &cat.Name, &cat.Description, &cat.Count); err != nil {
 			rows.Close()
 			return err
 		}
@@ -381,7 +427,11 @@ func (c *Community) load(r *http.Request, p *communityPage) error {
 	}
 	rows.Close()
 	switch {
-	case p.View == "", p.View == "/admin":
+	case strings.HasPrefix(p.View, "/u/"):
+		return c.loadProfile(r, p)
+	case p.View == "/admin":
+		return c.loadAdmin(p)
+	case p.View == "":
 		if p.View == "/admin" && (p.User == nil || !p.User.Admin) {
 			return sql.ErrNoRows
 		}
@@ -443,4 +493,28 @@ func (c *Community) load(r *http.Request, p *communityPage) error {
 	default:
 		return sql.ErrNoRows
 	}
+}
+
+// Require a direct loopback connection and a localhost Host. Proxy headers
+// disqualify requests even when a local tunnel is the connecting peer.
+func localAdminRequest(r *http.Request) bool {
+	peer, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil || !net.ParseIP(peer).IsLoopback() {
+		return false
+	}
+	host := r.Host
+	if h, _, err := net.SplitHostPort(host); err == nil {
+		host = h
+	}
+	host = strings.Trim(strings.ToLower(host), "[]")
+	if host != "localhost" && host != "127.0.0.1" && host != "::1" {
+		return false
+	}
+	for key := range r.Header {
+		k := strings.ToLower(key)
+		if k == "forwarded" || k == "x-real-ip" || strings.HasPrefix(k, "x-forwarded-") || strings.HasPrefix(k, "cf-") {
+			return false
+		}
+	}
+	return true
 }

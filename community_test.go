@@ -21,7 +21,8 @@ func (f *forumClient) request(method, path string, values url.Values) *httptest.
 	if cookie := f.cookies["sn_csrf"]; cookie != nil && method == "POST" {
 		values.Set("csrf", cookie.Value)
 	}
-	r := httptest.NewRequest(method, "https://community.example.test"+path, strings.NewReader(values.Encode()))
+	r := httptest.NewRequest(method, "https://localhost"+path, strings.NewReader(values.Encode()))
+	r.RemoteAddr = "127.0.0.1:12345"
 	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	for _, cookie := range f.cookies {
 		r.AddCookie(cookie)
