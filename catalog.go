@@ -18,7 +18,7 @@ type localizedText struct {
 }
 
 func (t localizedText) In(lang string) string {
-	if lang == "ar" && t.AR != "" {
+	if lang == "ar" {
 		return t.AR
 	}
 	return t.EN
@@ -103,12 +103,14 @@ func (a *App) serveCatalog(w http.ResponseWriter, r *http.Request, page Page, pa
 	if len(p.Query) > 150 {
 		p.Query = p.Query[:150]
 	}
-	p.Topics = []catalogTopic{
-		{Slug: "study", Icon: "book-open", Label: localizedText{"Students & Learning", "الطلاب والتعلّم"}},
-		{Slug: "hadith", Icon: "book-open", Label: localizedText{"Hadith", "الحديث"}},
-		{Slug: "fiqh", Icon: "book-open", Label: localizedText{"Fiqh", "الفقه"}},
-		{Slug: "manners", Icon: "users", Label: localizedText{"Manners & Character", "الآداب والأخلاق"}},
-		{Slug: "resources", Icon: "folder", Label: localizedText{"Resources & References", "المصادر والمراجع"}},
+	p.Topics = defaultCatalogTopics()
+	if a.community != nil {
+		var err error
+		p.Topics, err = a.community.libraryTopics()
+		if err != nil {
+			http.Error(w, "Unable to load topics", 500)
+			return
+		}
 	}
 	var all []catalogItem
 	var err error
@@ -121,9 +123,27 @@ func (a *App) serveCatalog(w http.ResponseWriter, r *http.Request, page Page, pa
 		http.Error(w, "Unable to load the library", 500)
 		return
 	}
+	available := map[string]bool{}
+	for _, x := range all {
+		if strings.TrimSpace(x.Title.In(p.Lang)) != "" {
+			section := "learn"
+			if x.Kind == "article" {
+				section = "articles"
+			}
+			available["/"+section+"/"+x.Slug] = true
+		}
+	}
+	for i := range all {
+		for j := range all[i].Steps {
+			if !available[all[i].Steps[j].Href] {
+				all[i].Steps[j].Href = ""
+			}
+		}
+	}
+
 	for _, item := range all {
 		belongs := (p.Section == "articles" && item.Kind == "article") || (p.Section == "learn" && item.Kind != "article")
-		if !belongs {
+		if !belongs || strings.TrimSpace(item.Title.In(p.Lang)) == "" {
 			continue
 		}
 		p.Total++

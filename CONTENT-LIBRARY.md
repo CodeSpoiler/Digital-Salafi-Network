@@ -2,9 +2,13 @@
 
 Local URLs: `/en/articles`, `/en/learn`, and their `/ar/` equivalents.
 
-Sign in as `network_admin` at `http://localhost:8095/community/admin` for Windows development. Open **Articles & Learning → Add content**. Choose Article, Book, Scholar or Learning path, enter a unique URL name, title, summary and sections, then publish. Arabic fields are optional and fall back to English. Learning paths can include multiple steps and links such as `/articles/a-steady-study-routine`.
+Sign in as `network_admin` at `http://localhost:8095/community/admin` for Windows development. The dashboard has separate Articles, Learning, Categories, Members, Discussions and Comments pages.
 
-Expand an existing item to edit or delete it. Publication and deletion take effect immediately; no restart is needed. Only locally connected administrators can manage content. All mutations require a valid session and CSRF token. Source links must use HTTPS. Content is plain text, safely escaped on display.
+To publish: choose Articles → Add article (or Learning → Add learning resource), choose a writing language and category, enter a title and text, and press Publish. Page addresses are generated automatically; short and Arabic titles work. Optional descriptions, section headings, authors and external sources can be left blank. Source links must use HTTPS.
+
+Choose English, Arabic or both. Only translated entries appear in each public language library: Arabic-only entries do not appear in English, and vice versa. Edit an entry and choose both languages to add a translation later. Changing the writing language switches visible fields and does not erase an existing translation. Learning paths offer a selector for existing guides instead of asking you to type page addresses. Aqeedah and Quran are included as categories; add more under Categories. Forum categories and library categories have separate forms.
+
+Use the content list to search, edit or delete entries. Delete opens an explicit confirmation. Failed validation keeps your submitted article text. Publishing and deletion take effect immediately without a restart. Only locally connected administrators can manage content; session and CSRF checks are required. Text is escaped on display.
 
 With `COMMUNITY_DB` enabled, the library is stored in the SQLite database alongside the community. Include this database in backups. `content/catalog.json` seeds the library once; deleted entries do not reappear on restart. A server without a database uses the read-only embedded catalog.
 

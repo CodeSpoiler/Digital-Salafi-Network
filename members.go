@@ -91,9 +91,12 @@ func (c *Community) saveProfile(w http.ResponseWriter, r *http.Request, p *commu
 	http.Redirect(w, r, "/community/u/"+p.User.Name, http.StatusSeeOther)
 	return nil
 }
-func (c *Community) loadAdmin(p *communityPage) error {
+func (c *Community) loadAdmin(r *http.Request, p *communityPage) error {
 	if p.User == nil || !p.User.Admin {
 		return sql.ErrNoRows
+	}
+	if err := c.prepareEditor(r, p); err != nil {
+		return err
 	}
 	var err error
 	p.CatalogItems, err = c.catalogItems()
@@ -174,8 +177,8 @@ func (c *Community) adminAction(w http.ResponseWriter, r *http.Request, p *commu
 		result, err = c.db.Exec("UPDATE topics SET hidden=0 WHERE id=?", id)
 	case "category-edit":
 		name, desc := strings.TrimSpace(r.PostForm.Get("name")), strings.TrimSpace(r.PostForm.Get("description"))
-		if len([]rune(name)) < 3 || len([]rune(name)) > 60 || len(desc) > 500 {
-			return errors.New("Use a category name of 3–60 characters and a description up to 500 bytes.")
+		if len([]rune(name)) < 1 || len([]rune(name)) > 60 || len(desc) > 500 {
+			return errors.New("Enter a category name (up to 60 characters) and a shorter description.")
 		}
 		result, err = c.db.Exec("UPDATE categories SET name=?,description=? WHERE id=?", name, desc, id)
 	default:
@@ -188,6 +191,6 @@ func (c *Community) adminAction(w http.ResponseWriter, r *http.Request, p *commu
 	if n == 0 {
 		return errors.New("Item not found.")
 	}
-	http.Redirect(w, r, "/community/admin", http.StatusSeeOther)
+	http.Redirect(w, r, "/community/admin?tab="+adminTab(r.FormValue("tab"))+"&saved=1", http.StatusSeeOther)
 	return nil
 }

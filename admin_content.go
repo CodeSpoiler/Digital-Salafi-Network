@@ -17,7 +17,7 @@ func initCatalog(db *sql.DB) error {
 		return err
 	}
 	defer tx.Rollback()
-	_, err = tx.Exec(`CREATE TABLE IF NOT EXISTS library(slug TEXT PRIMARY KEY,payload TEXT NOT NULL); CREATE TABLE IF NOT EXISTS library_migrations(version INTEGER PRIMARY KEY);`)
+	_, err = tx.Exec(`CREATE TABLE IF NOT EXISTS library(slug TEXT PRIMARY KEY,payload TEXT NOT NULL); CREATE TABLE IF NOT EXISTS library_migrations(version INTEGER PRIMARY KEY); CREATE TABLE IF NOT EXISTS library_topics(slug TEXT PRIMARY KEY,en TEXT NOT NULL,ar TEXT NOT NULL);`)
 	if err != nil {
 		return err
 	}
@@ -37,6 +37,11 @@ func initCatalog(db *sql.DB) error {
 			}
 		}
 		if _, err = tx.Exec("INSERT INTO library_migrations VALUES(1)"); err != nil {
+			return err
+		}
+	}
+	for _, topic := range defaultCatalogTopics() {
+		if _, err = tx.Exec("INSERT OR IGNORE INTO library_topics VALUES(?,?,?)", topic.Slug, topic.Label.EN, topic.Label.AR); err != nil {
 			return err
 		}
 	}
@@ -67,28 +72,38 @@ func (c *Community) manageContent(w http.ResponseWriter, r *http.Request, p *com
 		return errors.New("Local administrator access required.")
 	}
 	action := r.PostForm.Get("action")
-	if action == "content-save" {
-		item := catalogItem{Slug: strings.TrimSpace(r.FormValue("slug")), Kind: r.FormValue("kind"), Topic: r.FormValue("topic"), Author: strings.TrimSpace(r.FormValue("author")), Source: strings.TrimSpace(r.FormValue("source")), Image: "serene-courtyard.png", Title: localizedText{r.FormValue("title_en"), r.FormValue("title_ar")}, Summary: localizedText{r.FormValue("summary_en"), r.FormValue("summary_ar")}, Featured: r.FormValue("featured") == "on", Beginner: r.FormValue("beginner") == "on"}
-		if !regexp.MustCompile(`^[a-z0-9][a-z0-9-]{1,79}$`).MatchString(item.Slug) {
-			return errors.New("Use a unique URL name of 2–80 lowercase letters, numbers and hyphens.")
+	if action == "content-topic" {
+		en, ar := strings.TrimSpace(r.FormValue("name_en")), strings.TrimSpace(r.FormValue("name_ar"))
+		if en == "" && ar == "" {
+			return errors.New("Enter a category name in English or Arabic.")
 		}
+		if len([]rune(en)) > 60 || len([]rune(ar)) > 60 {
+			return errors.New("Keep category names under 60 characters.")
+		}
+		_, err := c.db.Exec("INSERT INTO library_topics VALUES(?,?,?)", "topic-"+token()[:12], en, ar)
+		if err != nil {
+			return err
+		}
+		http.Redirect(w, r, "/community/admin?tab=categories&saved=1", 303)
+		return nil
+	}
+	if action == "content-save" {
+		item := catalogItem{Slug: strings.TrimSpace(r.FormValue("slug")), Kind: r.FormValue("kind"), Topic: r.FormValue("topic"), Author: strings.TrimSpace(r.FormValue("author")), Source: strings.TrimSpace(r.FormValue("source")), Image: "serene-courtyard.png", Title: localizedText{strings.TrimSpace(r.FormValue("title_en")), strings.TrimSpace(r.FormValue("title_ar"))}, Summary: localizedText{r.FormValue("summary_en"), r.FormValue("summary_ar")}, Featured: r.FormValue("featured") == "on", Beginner: r.FormValue("beginner") == "on"}
+
+		defer func() {
+			p.Editor = item
+			p.EditorMode = "edit"
+			p.OriginalSlug = r.FormValue("original")
+			p.ContentLanguage = r.FormValue("language")
+			if p.ContentLanguage == "" {
+				p.ContentLanguage = "both"
+			}
+		}()
+
 		if item.Kind != "article" && item.Kind != "book" && item.Kind != "scholar" && item.Kind != "path" {
 			return errors.New("Choose a content type.")
 		}
-		if strings.TrimSpace(item.Title.EN) == "" || len(item.Title.EN) > 300 || len(item.Title.AR) > 600 {
-			return errors.New("An English title is required (up to 300 bytes).")
-		}
-		switch item.Topic {
-		case "study", "hadith", "fiqh", "manners", "resources":
-		default:
-			return errors.New("Choose a topic.")
-		}
-		if item.Source != "" {
-			u, e := url.Parse(item.Source)
-			if e != nil || u.Scheme != "https" || u.Hostname() == "" || u.User != nil {
-				return errors.New("Source must be a complete HTTPS URL.")
-			}
-		}
+
 		for i, h := range r.PostForm["heading_en"] {
 			value := func(k string) string {
 				v := r.PostForm[k]
@@ -109,7 +124,7 @@ func (c *Community) manageContent(w http.ResponseWriter, r *http.Request, p *com
 				}
 				return ""
 			}
-			if strings.TrimSpace(t) == "" {
+			if strings.TrimSpace(t+value("step_ar")) == "" {
 				continue
 			}
 			href := strings.TrimSpace(value("step_href"))
@@ -117,6 +132,35 @@ func (c *Community) manageContent(w http.ResponseWriter, r *http.Request, p *com
 				return errors.New("Step links must be /articles/url-name or /learn/url-name.")
 			}
 			item.Steps = append(item.Steps, catalogStep{localizedText{t, value("step_ar")}, localizedText{value("step_body_en"), value("step_body_ar")}, href})
+		}
+		if strings.TrimSpace(item.Title.EN) == "" && strings.TrimSpace(item.Title.AR) == "" {
+			return errors.New("Add a title in your chosen language.")
+		}
+		if len([]rune(item.Title.EN)) > 200 || len([]rune(item.Title.AR)) > 200 {
+			return errors.New("Keep each title under 200 characters.")
+		}
+		var topicExists int
+		if err := c.db.QueryRow("SELECT count(*) FROM library_topics WHERE slug=?", item.Topic).Scan(&topicExists); err != nil {
+			return err
+		}
+		if topicExists == 0 {
+			return errors.New("Choose a category for this content.")
+		}
+		if item.Slug == "" {
+			item.Slug = r.FormValue("original")
+			if item.Slug == "" {
+				item.Slug = automaticSlug(item.Title.EN, item.Kind)
+			}
+		}
+		if !regexp.MustCompile(`^[a-z0-9][a-z0-9-]{1,79}$`).MatchString(item.Slug) {
+			return errors.New("Unable to save this item. Please reopen the editor.")
+		}
+
+		if item.Source != "" {
+			u, e := url.Parse(item.Source)
+			if e != nil || u.Scheme != "https" || u.Hostname() == "" || u.User != nil {
+				return errors.New("Source must be a complete HTTPS URL.")
+			}
 		}
 		if original := r.FormValue("original"); original != "" {
 			var raw string
@@ -260,6 +304,6 @@ func (c *Community) manageContent(w http.ResponseWriter, r *http.Request, p *com
 			return err
 		}
 	}
-	http.Redirect(w, r, "/community/admin", http.StatusSeeOther)
+	http.Redirect(w, r, "/community/admin?tab="+adminTab(r.FormValue("tab"))+"&saved=1", http.StatusSeeOther)
 	return nil
 }

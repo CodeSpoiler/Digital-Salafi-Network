@@ -53,6 +53,11 @@ type commentNode struct {
 	Locked      bool
 }
 type communityPage struct {
+	AdminTab, EditorMode, ContentLanguage, OriginalSlug string
+	AdminSaved                                          bool
+	Editor                                              catalogItem
+	LibraryTopics                                       []catalogTopic
+
 	CatalogItems                             []catalogItem
 	AdminComments                            []profileComment
 	Profile                                  memberProfile
@@ -356,13 +361,13 @@ func (c *Community) post(w http.ResponseWriter, r *http.Request, p *communityPag
 			return errors.New("Only an administrator can manage categories.")
 		}
 		name, description := get("name"), get("description")
-		if len([]rune(name)) < 3 || len([]rune(name)) > 60 || len(description) > 500 {
-			return errors.New("Use a category name of 3–60 characters and a description up to 500 bytes.")
+		if len([]rune(name)) < 1 || len([]rune(name)) > 60 || len(description) > 500 {
+			return errors.New("Enter a category name (up to 60 characters) and a shorter description.")
 		}
 		if _, err := c.db.Exec("INSERT INTO categories(name,description) VALUES(?,?)", name, description); err != nil {
 			return errors.New("That category already exists.")
 		}
-		redirect = "/community/admin"
+		redirect = "/community/admin?tab=categories&saved=1"
 	default:
 		if !strings.HasPrefix(p.View, "/t/") {
 			return errors.New("Unknown action.")
@@ -440,7 +445,7 @@ func (c *Community) load(r *http.Request, p *communityPage) error {
 	case strings.HasPrefix(p.View, "/u/"):
 		return c.loadProfile(r, p)
 	case p.View == "/admin":
-		return c.loadAdmin(p)
+		return c.loadAdmin(r, p)
 	case p.View == "":
 		if p.View == "/admin" && (p.User == nil || !p.User.Admin) {
 			return sql.ErrNoRows
