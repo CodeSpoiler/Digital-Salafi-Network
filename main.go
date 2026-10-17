@@ -95,16 +95,8 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, a.forum+"?q="+url.QueryEscape(r.URL.Query().Get("q")), http.StatusFound)
 		return
 	case "articles", "learn":
-		// Retire old preview-detail URLs without suggesting finished content exists.
-		if len(parts) > 2 {
-			http.Redirect(w, r, "/"+p.Lang+"/"+p.Section, http.StatusFound)
-			return
-		}
-		if p.Section == "articles" {
-			p.Title = p.Text("Articles", "المقالات")
-		} else {
-			p.Title = p.Text("Learning", "التعلّم")
-		}
+		a.serveCatalog(w, r, p, parts)
+		return
 	case "home":
 		p.Title = p.Text("A home for knowledge, learning, and community", "بيت للسلفيين")
 	case "about":

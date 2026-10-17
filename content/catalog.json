@@ -1,0 +1,418 @@
+[
+  {
+    "slug": "a-steady-study-routine",
+    "kind": "article",
+    "title": {
+      "en": "Build a steady study routine",
+      "ar": "كيف تبني عادة تعلّم ثابتة"
+    },
+    "summary": {
+      "en": "A practical starting point for making space to read, take notes, and review what you learn.",
+      "ar": "خطوات عملية لتخصيص وقت للقراءة وتدوين الفوائد ومراجعة ما تتعلّمه."
+    },
+    "topic": "study",
+    "image": "serene-courtyard.png",
+    "featured": true,
+    "beginner": true,
+    "author": "Salafi Network",
+    "source": "",
+    "sections": [
+      {
+        "heading": {
+          "en": "Start with a manageable session",
+          "ar": "ابدأ بوقت يمكنك الالتزام به"
+        },
+        "body": {
+          "en": "Choose a short, realistic time for reading. Attach it to something already in your day, and keep one book or lesson ready. A small session that fits your circumstances is easier to repeat than an ambitious schedule that does not.",
+          "ar": "اختر وقتًا قصيرًا يناسب يومك، واربطه بعادة موجودة، وجهّز كتابًا أو درسًا واحدًا. الوقت اليسير الذي يناسب ظروفك أسهل استمرارًا من جدول كبير يصعب تطبيقه."
+        }
+      },
+      {
+        "heading": {
+          "en": "Keep your notes simple",
+          "ar": "بسّط ملاحظاتك"
+        },
+        "body": {
+          "en": "Record the title, author, and page or lesson number. Write one idea you understood in your own words, and place unanswered questions in a separate list. Distinguish quotations from your own summaries.",
+          "ar": "دوّن عنوان المصدر ومؤلفه ورقم الصفحة أو الدرس. اكتب فائدة فهمتها بأسلوبك، واجمع الأسئلة التي لم تتضح لك في قائمة مستقلة. ميّز بين النقل الحرفي وتلخيصك الشخصي."
+        }
+      },
+      {
+        "heading": {
+          "en": "Make room for review",
+          "ar": "خصص وقتًا للمراجعة"
+        },
+        "body": {
+          "en": "Before starting something new, revisit your previous notes. Check your summary against the source, correct misunderstandings, and ask a qualified teacher about questions that remain.",
+          "ar": "قبل البدء بمادة جديدة، راجع ملاحظاتك السابقة وقارن تلخيصك بالمصدر وصحّح ما يحتاج إلى تصحيح، واسأل معلّمًا مؤهلًا عمّا لم يتضح لك."
+        }
+      },
+      {
+        "heading": {
+          "en": "Adjust without abandoning the habit",
+          "ar": "عدّل خطتك ولا تنقطع"
+        },
+        "body": {
+          "en": "At the end of the week, look at what you actually completed. Reduce the amount if needed, keep a clear next step, and resume calmly after missed days. This is a planning guide, not a prescribed religious practice.",
+          "ar": "في نهاية الأسبوع، انظر إلى ما أنجزته فعلًا، وخفف المقدار عند الحاجة وحدّد الخطوة التالية، ثم عُد بهدوء بعد أيام الانقطاع. هذه إرشادات لتنظيم الوقت وليست عبادة محددة بوقت أو عدد."
+        }
+      }
+    ],
+    "steps": []
+  },
+  {
+    "slug": "reading-with-context",
+    "kind": "article",
+    "title": {
+      "en": "Good reading begins with context",
+      "ar": "القراءة الجيدة تبدأ بفهم السياق"
+    },
+    "summary": {
+      "en": "Keep sources, quotations, and your own notes clearly connected.",
+      "ar": "اربط النصوص بمصادرها وميّز النقول عن ملاحظاتك."
+    },
+    "topic": "resources",
+    "image": "hero-blue.png",
+    "featured": false,
+    "beginner": true,
+    "author": "Salafi Network",
+    "source": "",
+    "sections": [
+      {
+        "heading": {
+          "en": "Know what you are reading",
+          "ar": "اعرف المادة التي تقرؤها"
+        },
+        "body": {
+          "en": "Check the author, title, edition, and translator before you begin. An excerpt may omit qualifications or the question that prompted an answer. When possible, return to the complete source.",
+          "ar": "تحقّق من المؤلف والعنوان والطبعة والمترجم قبل القراءة. قد يحذف المقتطف قيودًا أو السؤال الذي وردت الإجابة عنه، فارجع إلى المصدر الكامل متى أمكن."
+        }
+      },
+      {
+        "heading": {
+          "en": "Preserve the distinction",
+          "ar": "ميّز النقل من التلخيص"
+        },
+        "body": {
+          "en": "Use quotation marks for exact wording and record its location. Label a paraphrase as a summary. If you share a passage in the forum, provide a source link and explain the question you want to discuss.",
+          "ar": "ضع النص المنقول حرفيًا بين علامتي اقتباس واذكر موضعه، وبيّن أن التلخيص من صياغتك. وعند مشاركة نص في المنتدى، أرفق رابطه ووضّح السؤال الذي تريد مناقشته."
+        }
+      }
+    ],
+    "steps": []
+  },
+  {
+    "slug": "organise-your-reading",
+    "kind": "article",
+    "title": {
+      "en": "A simple notebook for beneficial reading",
+      "ar": "دفتر بسيط للقراءة النافعة"
+    },
+    "summary": {
+      "en": "A lightweight way to organise references, questions, and review notes.",
+      "ar": "طريقة بسيطة لتنظيم المراجع والأسئلة والمراجعة."
+    },
+    "topic": "study",
+    "image": "hero-blue.png",
+    "featured": false,
+    "beginner": true,
+    "author": "Salafi Network",
+    "source": "",
+    "sections": [
+      {
+        "heading": {
+          "en": "One place for your references",
+          "ar": "مكان واحد للمراجع"
+        },
+        "body": {
+          "en": "Create three sections: sources, notes, and questions. Give each reading session a date and a clear title. A paper notebook or a simple text document is enough.",
+          "ar": "قسّم دفترك إلى مصادر وفوائد وأسئلة. ضع لكل جلسة تاريخًا وعنوانًا واضحًا. يكفي دفتر ورقي أو ملف نصي بسيط."
+        }
+      },
+      {
+        "heading": {
+          "en": "Review before collecting more",
+          "ar": "راجع قبل جمع المزيد"
+        },
+        "body": {
+          "en": "Keep a short list of material you are actively studying. Finish or pause an item deliberately before adding another. Review your questions with a teacher instead of allowing unclear points to accumulate.",
+          "ar": "احتفظ بقائمة قصيرة لما تدرسه حاليًا. أنجز المادة أو أوقفها بقرار واضح قبل إضافة غيرها. وراجع أسئلتك مع معلّم بدل ترك المسائل غير الواضحة تتراكم."
+        }
+      }
+    ],
+    "steps": []
+  },
+  {
+    "slug": "asking-helpful-questions",
+    "kind": "article",
+    "title": {
+      "en": "Ask questions that lead to useful discussion",
+      "ar": "كيف تطرح سؤالًا يعين على النقاش النافع"
+    },
+    "summary": {
+      "en": "Provide context, identify your question, and leave room to listen.",
+      "ar": "اذكر السياق وحدّد سؤالك وأحسن الاستماع."
+    },
+    "topic": "manners",
+    "image": "serene-courtyard.png",
+    "featured": false,
+    "beginner": true,
+    "author": "Salafi Network",
+    "source": "",
+    "sections": [
+      {
+        "heading": {
+          "en": "Be specific and considerate",
+          "ar": "كن واضحًا ومراعيًا للآخرين"
+        },
+        "body": {
+          "en": "Describe the point you are trying to understand. Include the source or passage if relevant, and avoid guessing another person’s intention. Keep personal details private.",
+          "ar": "حدّد المسألة التي تريد فهمها، وأرفق المصدر أو النص عند الحاجة، وتجنّب الحكم على نيات الآخرين، وحافظ على خصوصية المعلومات الشخصية."
+        }
+      },
+      {
+        "heading": {
+          "en": "Follow up with care",
+          "ar": "تابع الحوار بعناية"
+        },
+        "body": {
+          "en": "Read responses carefully and ask for clarification where needed. For a religious ruling or a personal situation, seek a qualified scholar rather than treating a discussion thread as a definitive answer.",
+          "ar": "اقرأ الإجابات بعناية واطلب التوضيح عند الحاجة. وفي الفتوى أو المسألة الشخصية ارجع إلى عالم مؤهل، ولا تجعل موضوع المنتدى جوابًا نهائيًا."
+        }
+      }
+    ],
+    "steps": []
+  },
+  {
+    "slug": "reading-plan",
+    "kind": "path",
+    "title": {
+      "en": "Foundations of a steady learning habit",
+      "ar": "أسس التعلّم المنتظم"
+    },
+    "summary": {
+      "en": "A practical, four-step path to organise your reading and build a sustainable routine.",
+      "ar": "مسار عملي من أربع خطوات لتنظيم القراءة وبناء عادة مستمرة."
+    },
+    "topic": "study",
+    "image": "serene-courtyard.png",
+    "featured": true,
+    "beginner": true,
+    "author": "Salafi Network",
+    "source": "",
+    "sections": [],
+    "steps": [
+      {
+        "title": {
+          "en": "Set up your study routine",
+          "ar": "نظّم وقت التعلّم"
+        },
+        "body": {
+          "en": "Choose a realistic reading session and a clear next step.",
+          "ar": "اختر وقتًا مناسبًا وخطوة تالية واضحة."
+        },
+        "href": "/articles/a-steady-study-routine"
+      },
+      {
+        "title": {
+          "en": "Read in context",
+          "ar": "اقرأ في السياق"
+        },
+        "body": {
+          "en": "Learn to keep quotations connected to their sources.",
+          "ar": "تعلّم ربط النقول بمصادرها."
+        },
+        "href": "/articles/reading-with-context"
+      },
+      {
+        "title": {
+          "en": "Organise your notes",
+          "ar": "رتّب ملاحظاتك"
+        },
+        "body": {
+          "en": "Create a place for references, notes, and questions.",
+          "ar": "خصص مكانًا للمراجع والفوائد والأسئلة."
+        },
+        "href": "/articles/organise-your-reading"
+      },
+      {
+        "title": {
+          "en": "Ask and review",
+          "ar": "اسأل وراجع"
+        },
+        "body": {
+          "en": "Bring a clear question to a teacher or a thoughtful discussion.",
+          "ar": "اطرح سؤالًا واضحًا على معلّم أو في نقاش نافع."
+        },
+        "href": "/articles/asking-helpful-questions"
+      }
+    ]
+  },
+  {
+    "slug": "source-literacy",
+    "kind": "path",
+    "title": {
+      "en": "Reading with care and clarity",
+      "ar": "قراءة بعناية ووضوح"
+    },
+    "summary": {
+      "en": "A short path for checking context and organising what you read.",
+      "ar": "مسار قصير لفهم السياق وتنظيم القراءة."
+    },
+    "topic": "resources",
+    "image": "hero-blue.png",
+    "featured": false,
+    "beginner": true,
+    "author": "Salafi Network",
+    "source": "",
+    "sections": [],
+    "steps": [
+      {
+        "title": {
+          "en": "Check the source",
+          "ar": "تحقّق من المصدر"
+        },
+        "body": {
+          "en": "Read the full context and record the reference.",
+          "ar": "اقرأ السياق الكامل ودوّن المرجع."
+        },
+        "href": "/articles/reading-with-context"
+      },
+      {
+        "title": {
+          "en": "Build a notebook",
+          "ar": "أنشئ دفترًا للفوائد"
+        },
+        "body": {
+          "en": "Keep quotations and your own summaries distinct.",
+          "ar": "ميّز النقول عن تلخيصك الشخصي."
+        },
+        "href": "/articles/organise-your-reading"
+      }
+    ]
+  },
+  {
+    "slug": "riyad-as-salihin",
+    "kind": "book",
+    "title": {
+      "en": "Riyad as-Salihin",
+      "ar": "رياض الصالحين"
+    },
+    "summary": {
+      "en": "Browse the collection by Imam an-Nawawi in an external reading library.",
+      "ar": "تصفّح كتاب الإمام النووي في مكتبة خارجية."
+    },
+    "topic": "hadith",
+    "image": "serene-courtyard.png",
+    "featured": false,
+    "beginner": true,
+    "author": "Imam an-Nawawi",
+    "source": "https://sunnah.com/riyadussalihin",
+    "sections": [
+      {
+        "heading": {
+          "en": "Reading this resource",
+          "ar": "قراءة هذا المصدر"
+        },
+        "body": {
+          "en": "The reading link opens Sunnah.com. Use the chapter structure and references to navigate the collection. This directory entry does not replace a scholarly explanation.",
+          "ar": "يفتح رابط القراءة موقع Sunnah.com. استفد من أبواب الكتاب ومراجعه للوصول إلى النصوص. هذا المدخل التعريفي لا يغني عن شرح أهل العلم."
+        }
+      }
+    ],
+    "steps": []
+  },
+  {
+    "slug": "bulugh-al-maram",
+    "kind": "book",
+    "title": {
+      "en": "Bulugh al-Maram",
+      "ar": "بلوغ المرام"
+    },
+    "summary": {
+      "en": "An external reading entry for the collection by Ibn Hajar al-Asqalani.",
+      "ar": "مدخل للقراءة الخارجية لكتاب ابن حجر العسقلاني."
+    },
+    "topic": "fiqh",
+    "image": "serene-courtyard.png",
+    "featured": false,
+    "beginner": false,
+    "author": "Ibn Hajar al-Asqalani",
+    "source": "https://sunnah.com/bulugh",
+    "sections": [
+      {
+        "heading": {
+          "en": "Reading this resource",
+          "ar": "قراءة هذا المصدر"
+        },
+        "body": {
+          "en": "Open the source to browse the collection and its references. Study questions about legal interpretation with a qualified teacher.",
+          "ar": "افتح المصدر لتصفّح الكتاب ومراجعه، وادرس مسائل الاستنباط والأحكام مع معلّم مؤهل."
+        }
+      }
+    ],
+    "steps": []
+  },
+  {
+    "slug": "ibn-baz",
+    "kind": "scholar",
+    "title": {
+      "en": "Shaykh Ibn Baz",
+      "ar": "الشيخ ابن باز"
+    },
+    "summary": {
+      "en": "Visit the official website for the scholar’s published material.",
+      "ar": "زر الموقع الرسمي للاطلاع على المواد المنشورة للشيخ."
+    },
+    "topic": "resources",
+    "image": "serene-courtyard.png",
+    "featured": false,
+    "beginner": true,
+    "author": "Official website",
+    "source": "https://binbaz.org.sa/",
+    "sections": [
+      {
+        "heading": {
+          "en": "Official resource directory",
+          "ar": "الموقع الرسمي"
+        },
+        "body": {
+          "en": "This entry links to the official website. Browse its own categories for lessons, written material, and answers with their original context.",
+          "ar": "يربط هذا المدخل بالموقع الرسمي. تصفّح أقسامه للوصول إلى الدروس والمواد المكتوبة والإجابات في سياقها الأصلي."
+        }
+      }
+    ],
+    "steps": []
+  },
+  {
+    "slug": "ibn-uthaymin",
+    "kind": "scholar",
+    "title": {
+      "en": "Shaykh Ibn Uthaymin",
+      "ar": "الشيخ ابن عثيمين"
+    },
+    "summary": {
+      "en": "Explore the official website and its library of published material.",
+      "ar": "تصفّح الموقع الرسمي ومكتبته العلمية."
+    },
+    "topic": "resources",
+    "image": "serene-courtyard.png",
+    "featured": false,
+    "beginner": true,
+    "author": "Official website",
+    "source": "https://binothaimeen.net/",
+    "sections": [
+      {
+        "heading": {
+          "en": "Official resource directory",
+          "ar": "الموقع الرسمي"
+        },
+        "body": {
+          "en": "This entry opens the scholar’s official website. Check the source page for the title and full context of each resource.",
+          "ar": "يفتح هذا المدخل الموقع الرسمي للشيخ. راجع صفحة المصدر لمعرفة عنوان كل مادة وسياقها الكامل."
+        }
+      }
+    ],
+    "steps": []
+  }
+]

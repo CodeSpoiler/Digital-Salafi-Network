@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestLandingAndProgress(t *testing.T) {
+func TestLandingAndLibrary(t *testing.T) {
 	t.Setenv("FORUM_URL", "http://localhost")
 	a, err := newApp("")
 	if err != nil {
@@ -18,15 +18,15 @@ func TestLandingAndProgress(t *testing.T) {
 		if w.Code != 200 {
 			t.Fatalf("%s: %d", path, w.Code)
 		}
-		if (path == "/en/articles" || path == "/en/learn") && !strings.Contains(w.Body.String(), "Still in progress.") {
-			t.Fatal("Missing progress notice")
+		if (path == "/en/articles" || path == "/en/learn") && !strings.Contains(w.Body.String(), "catalog.css") {
+			t.Fatal("Missing library layout")
 		}
 	}
 }
 func TestForumRedirectsAndRetiredRoutes(t *testing.T) {
 	t.Setenv("FORUM_URL", "http://localhost")
 	a, _ := newApp("")
-	cases := map[string]string{"/en/forum": "http://localhost/", "/ar/forum": "http://localhost/", "/en/forum/old-topic": "http://localhost/", "/en/search?q=books+%26+learning": "http://localhost?q=books+%26+learning", "/en/articles/welcome": "/en/articles", "/en/learn/books": "/en/learn"}
+	cases := map[string]string{"/en/forum": "http://localhost/", "/ar/forum": "http://localhost/", "/en/forum/old-topic": "http://localhost/", "/en/search?q=books+%26+learning": "http://localhost?q=books+%26+learning"}
 	for path, want := range cases {
 		w := httptest.NewRecorder()
 		a.ServeHTTP(w, httptest.NewRequest("GET", path, nil))
