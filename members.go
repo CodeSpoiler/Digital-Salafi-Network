@@ -95,7 +95,29 @@ func (c *Community) loadAdmin(p *communityPage) error {
 	if p.User == nil || !p.User.Admin {
 		return sql.ErrNoRows
 	}
-	rows, err := c.db.Query(profileSelect + "ORDER BY m.id DESC LIMIT 200")
+	var err error
+	p.CatalogItems, err = c.catalogItems()
+	if err != nil {
+		return err
+	}
+	cr, err := c.db.Query("SELECT r.id,r.topic_id,t.title,r.body,r.created FROM replies r JOIN topics t ON t.id=r.topic_id ORDER BY r.id DESC LIMIT 200")
+	if err != nil {
+		return err
+	}
+	for cr.Next() {
+		var x profileComment
+		if err = cr.Scan(&x.ID, &x.TopicID, &x.Title, &x.Body, &x.Created); err != nil {
+			cr.Close()
+			return err
+		}
+		p.AdminComments = append(p.AdminComments, x)
+	}
+	err = cr.Err()
+	cr.Close()
+	if err != nil {
+		return err
+	}
+	rows, err := c.db.Query(profileSelect + "WHERE m.name != 'deleted_member' ORDER BY m.id DESC LIMIT 200")
 	if err != nil {
 		return err
 	}
@@ -129,6 +151,12 @@ func (c *Community) loadAdmin(p *communityPage) error {
 func (c *Community) adminAction(w http.ResponseWriter, r *http.Request, p *communityPage) error {
 	if p.User == nil || !p.User.Admin {
 		return errors.New("Administrator access required.")
+	}
+	if !localAdminRequest(r) {
+		return errors.New("Local administrator access required.")
+	}
+	if strings.HasPrefix(r.PostForm.Get("action"), "content-") || strings.HasPrefix(r.PostForm.Get("action"), "delete-") {
+		return c.manageContent(w, r, p)
 	}
 	id, err := strconv.ParseInt(r.PostForm.Get("id"), 10, 64)
 	if err != nil || id <= 0 {

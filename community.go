@@ -53,6 +53,8 @@ type commentNode struct {
 	Locked      bool
 }
 type communityPage struct {
+	CatalogItems                             []catalogItem
+	AdminComments                            []profileComment
 	Profile                                  memberProfile
 	Members                                  []memberProfile
 	AdminTopics                              []adminTopic
@@ -115,6 +117,10 @@ func openCommunity(path string) (*Community, error) {
 		}
 	}
 	if _, err = db.Exec(`CREATE TABLE IF NOT EXISTS profiles(member_id INTEGER PRIMARY KEY REFERENCES members(id), display_name TEXT NOT NULL DEFAULT '', bio TEXT NOT NULL DEFAULT '', interests TEXT NOT NULL DEFAULT '', goals TEXT NOT NULL DEFAULT '', joined TEXT NOT NULL DEFAULT '');`); err != nil {
+		db.Close()
+		return nil, err
+	}
+	if err = initCatalog(db); err != nil {
 		db.Close()
 		return nil, err
 	}
@@ -225,7 +231,11 @@ func (c *Community) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		p.CSRF = csrf.Value
 	}
 	if r.Method == http.MethodPost {
-		r.Body = http.MaxBytesReader(w, r.Body, 32768)
+		limit := int64(32768)
+		if p.View == "/admin" && p.User != nil && p.User.Admin {
+			limit = 262144
+		}
+		r.Body = http.MaxBytesReader(w, r.Body, limit)
 		if err = r.ParseForm(); err != nil {
 			http.Error(w, "Form is too large", 400)
 			return
@@ -282,7 +292,7 @@ func (c *Community) post(w http.ResponseWriter, r *http.Request, p *communityPag
 	switch p.View {
 	case "/register", "/login":
 		name, password := get("username"), r.PostForm.Get("password")
-		if !usernamePattern.MatchString(name) || len(password) < 12 || len(password) > 72 {
+		if strings.EqualFold(name, "deleted_member") || !usernamePattern.MatchString(name) || len(password) < 12 || len(password) > 72 {
 			return errors.New("Use a 3–24 character username (letters, numbers, underscore) and a password of 12–72 bytes.")
 		}
 		var id int64
@@ -410,7 +420,7 @@ func (c *Community) post(w http.ResponseWriter, r *http.Request, p *communityPag
 	return nil
 }
 func (c *Community) load(r *http.Request, p *communityPage) error {
-	if err := c.db.QueryRow(`SELECT (SELECT count(*) FROM topics WHERE hidden=0), (SELECT count(*) FROM replies r JOIN topics t ON t.id=r.topic_id WHERE t.hidden=0), (SELECT count(*) FROM members)`).Scan(&p.TotalTopics, &p.TotalComments, &p.TotalMembers); err != nil {
+	if err := c.db.QueryRow(`SELECT (SELECT count(*) FROM topics WHERE hidden=0), (SELECT count(*) FROM replies r JOIN topics t ON t.id=r.topic_id WHERE t.hidden=0), (SELECT count(*) FROM members WHERE name != 'deleted_member')`).Scan(&p.TotalTopics, &p.TotalComments, &p.TotalMembers); err != nil {
 		return err
 	}
 	rows, err := c.db.Query("SELECT c.id,c.name,c.description,(SELECT count(*) FROM topics t WHERE t.category_id=c.id AND t.hidden=0) FROM categories c ORDER BY c.id")

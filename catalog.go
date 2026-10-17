@@ -111,7 +111,13 @@ func (a *App) serveCatalog(w http.ResponseWriter, r *http.Request, page Page, pa
 		{Slug: "resources", Icon: "folder", Label: localizedText{"Resources & References", "المصادر والمراجع"}},
 	}
 	var all []catalogItem
-	if err := json.Unmarshal(catalogJSON, &all); err != nil {
+	var err error
+	if a.community != nil {
+		all, err = a.community.catalogItems()
+	} else {
+		err = json.Unmarshal(catalogJSON, &all)
+	}
+	if err != nil {
 		http.Error(w, "Unable to load the library", 500)
 		return
 	}
